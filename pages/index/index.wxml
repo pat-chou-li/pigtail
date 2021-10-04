@@ -1,0 +1,6 @@
+<!-- index.wxml -->
+<view class="container">
+    <view class="card" bindtap="btnclick">
+        <image class="" src="../../static/mahou.jpeg" mode="scaleToFill" lazy-load="false" binderror="" bindload="" />
+    </view>
+</view>

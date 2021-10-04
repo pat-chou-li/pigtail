@@ -1,0 +1,31 @@
+<view class="container">
+    <view class="card">
+        <view class="top">
+            <view class="love1">
+                <image class="" src="../../static/md-favorite.svg" mode="aspectFill" lazy-load="false" />
+            </view>
+            <view class="pigtail">
+                <image class="" src="../../static/pigtail.png" mode="aspectFit" lazy-load="false" />
+            </view>
+        </view>
+        <view class="view_fengexian">
+            <view></view>
+            <text class="text_fengexian">*登录*</text>
+            <view></view>
+        </view>
+        <view class="bottom">
+            <view class="unContainer">
+                <image class="" src="../../static/md-person.svg" mode="aspectFill" />
+                <input class="" model:value="{{username}}" type="text" placeholder="请输入学号"></input>
+            </view>
+            <view class="pswContainer">
+                <image class="" src="../../static/antFill-lock.svg" mode="aspectFill" />
+                <input class="" model:value="{{password}}" type="text" password="true" placeholder="请输入密码"></input>
+            </view>
+            <view class='login' bindtap='submit'>登录</view>
+            <view class="love2">
+                <image class="" src="../../static/md-favorite.svg" mode="aspectFill" lazy-load="false" />
+            </view>
+        </view>
+    </view>
+</view>

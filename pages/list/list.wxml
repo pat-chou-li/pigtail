@@ -1,0 +1,36 @@
+<view class="container">
+    <view class="card">
+        <view class="top">
+            <view class="love1">
+                <image class="" src="../../static/md-favorite.svg" mode="aspectFill" lazy-load="false" />
+            </view>
+            <view class="pigtail">
+                <image class="" src="../../static/pigtail.png" mode="aspectFit" lazy-load="false" />
+            </view>
+        </view>
+        <view class="view_fengexian">
+            <view></view>
+            <text class="text_fengexian">*游戏列表*</text>
+            <view></view>
+        </view>
+        <view class="bottom">
+            <view class="unContainer">
+                <input class="" model:value="{{joinuuid}}" type="text" placeholder="请输入uuid加入对局" placeholder-class="center"></input>
+                <image bindtap="join" class="" src="../../static/join.svg" mode="aspectFill" />
+            </view>
+            <scroll-view class='scrollView' scroll-y='{{true}}' bindscrolltolower='scrollToLower' bindscrolltoupper='scrollToUpper' lower-threshold='30' upper-threshold='0'>
+                <block wx:for='{{articles}}' wx:key='{{item.uuid}}'>
+                    <view class='articles-container'>
+                        <view bindtap="choose" data-uuid="{{item.uuid}}" class='info'>
+                            <text class='create-at'>uuid:{{item.uuid}}</text>
+                        </view>
+                    </view>
+                </block>
+                <view class='data-loading' hidden='{{hidden}}'>数据加载中...</view>
+            </scroll-view>
+            <view class="love2">
+                <image class="" src="../../static/md-favorite.svg" mode="aspectFill" lazy-load="false" />
+            </view>
+        </view>
+    </view>
+</view>

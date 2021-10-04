@@ -1,0 +1,19 @@
+{
+	"pages": [
+		"pages/index/index",
+		"pages/login/login",
+		"pages/gamehall/gamehall",
+		"pages/battle/battle",
+		"pages/game/game",
+		"pages/list/list"
+	],
+	"window": {
+		"backgroundTextStyle": "light",
+		"navigationBarBackgroundColor": "#fff",
+		"navigationBarTitleText": "Weixin",
+		"navigationBarTextStyle": "black",
+		"navigationStyle": "custom"
+	},
+	"style": "v2",
+	"sitemapLocation": "sitemap.json"
+}
