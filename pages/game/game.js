@@ -15,7 +15,7 @@ Page({
 		enermyHeartStack: [],
 		enermyClubStack: [],
 		enermyDiamondStack: [],
-		//敌方花色卡牌栈顶
+		//敌方各花色卡牌栈顶
 		enermySpadeTop: '../../static/pukeimage1/back.png',
 		enermyHeartTop: '../../static/pukeimage1/back.png',
 		enermyClubTop: '../../static/pukeimage1/back.png',
