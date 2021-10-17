@@ -20,7 +20,7 @@ Page({
 						private: true,
 					},
 					header: {
-						Authorization: head,
+						Authorization:head,
 					},
 					success(res) {
 						wx.hideLoading()

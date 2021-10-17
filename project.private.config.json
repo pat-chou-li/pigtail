@@ -41,6 +41,24 @@
           "pathName": "pages/game/game",
           "query": "",
           "scene": null
+        },
+        {
+          "name": "pages/chooseMode/chooseMode",
+          "pathName": "pages/chooseMode/chooseMode",
+          "query": "",
+          "scene": null
+        },
+        {
+          "name": "pages/localGame/localGame",
+          "pathName": "pages/localGame/localGame",
+          "query": "",
+          "scene": null
+        },
+        {
+          "name": "pages/AIGame/AIGame",
+          "pathName": "pages/AIGame/AIGame",
+          "query": "",
+          "scene": null
         }
       ]
     }

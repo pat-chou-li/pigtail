@@ -29,7 +29,7 @@ Page({
 					wx.setStorageSync('token', res.data.data.token)
 					wx.setStorageSync('username', that.data.username)
 					wx.reLaunch({
-						url: '/pages/gamehall/gamehall',
+						url: '/pages/chooseMode/chooseMode',
 					})
 				} else {
 					wx.showToast({

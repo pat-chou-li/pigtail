@@ -4,31 +4,31 @@
         <view class="enermyConbine">
             <view class="total">Total:{{enermyTotal}}</view>
             <view class="avatar enermy">
-                <image style="{{turn?'box-shadow: red 0 0 2px 2px;':'box-shadow: greenyellow 0 0 2px 2px;'}}" src="../../static/enermy.jpg" mode="aspectFit" lazy-load="false" binderror="" bindload="" />
+                <image style="{{p1Turn?'box-shadow: red 0 0 2px 2px;':'box-shadow: greenyellow 0 0 2px 2px;'}}" src="../../static/enermy.jpg" mode="aspectFit" lazy-load="false" binderror="" bindload="" />
             </view>
         </view>
         <view class='cards'>
-            <view class="card">
+            <view class="card" bindtap="run" data-flower="S" data-type="2p">
                 <image src="{{enermySpadeTop}}" mode="aspectFit" lazy-load="false" binderror="" bindload="" />
                 <view class="cardnumber">×{{enermySpade}}</view>
             </view>
-            <view class="card">
+            <view class="card" bindtap="run" data-flower="H" data-type="2p">
                 <image src="{{enermyHeartTop}}" mode="aspectFit" lazy-load="false" binderror="" bindload="" />
                 <view class="cardnumber">×{{enermyHeart}}</view>
             </view>
-            <view class="card">
+            <view class="card" bindtap="run" data-flower="C" data-type="2p">
                 <image src="{{enermyClubTop}}" mode="aspectFit" lazy-load="false" binderror="" bindload="" />
                 <view class="cardnumber">×{{enermyClub}}</view>
             </view>
-            <view class="card">
+            <view class="card" bindtap="run" data-flower="D" data-type="2p">
                 <image src="{{enermyDiamondTop}}" mode="aspectFit" lazy-load="false" binderror="" bindload="" />
                 <view class="cardnumber">×{{enermyDiamond}}</view>
             </view>
         </view>
     </view>
     <view class="battleContainer">
-        <view class="pile" bindtap="run" data-flower="null" data-type="0">
-            <image class="sakura" src="../../static/mahou.jpeg" mode="aspectFit" lazy-load="false" />
+        <view class="pile" bindtap="flop" data-flower="null" data-type="0">
+            <image class="sakura" src="{{pileTop}}" mode="aspectFit" lazy-load="false" />
             <view class="cardnumber">×{{pileTotal}}</view>
         </view>
         <view class="main">
@@ -60,19 +60,19 @@
     </view>
     <view class="meContainer">
         <view class='cards'>
-            <view class="card" bindtap="run" data-flower="S" data-type="1">
+            <view class="card" bindtap="run" data-flower="S" data-type="1p">
                 <image src="{{meSpadeTop}}" mode="aspectFit" lazy-load="false" binderror="" bindload="" />
                 <view class="cardnumber">×{{meSpade}}</view>
             </view>
-            <view class="card" bindtap="run" data-flower="H" data-type="1">
+            <view class="card" bindtap="run" data-flower="H" data-type="1p">
                 <image src="{{meHeartTop}}" mode="aspectFit" lazy-load="false" binderror="" bindload="" />
                 <view class="cardnumber">×{{meHeart}}</view>
             </view>
-            <view class="card" bindtap="run" data-flower="C" data-type="1">
+            <view class="card" bindtap="run" data-flower="C" data-type="1p">
                 <image src="{{meClubTop}}" mode="aspectFit" lazy-load="false" binderror="" bindload="" />
                 <view class="cardnumber">×{{meClub}}</view>
             </view>
-            <view class="card" bindtap="run" data-flower="D" data-type="1">
+            <view class="card" bindtap="run" data-flower="D" data-type="1p">
                 <image src="{{meDiamondTop}}" mode="aspectFit" lazy-load="false" binderror="" bindload="" />
                 <view class="cardnumber">×{{meDiamond}}</view>
             </view>
@@ -80,9 +80,8 @@
         <view class="avatar me">
             <view class="enermyConbine meConbine">
                 <view class="total meTotal">Total:{{meTotal}}</view>
-                <image style="{{turn?'box-shadow: greenyellow 0 0 2px 2px;':'box-shadow: red 0 0 2px 2px;'}}" class="meAvatar" src="../../static/dragon.jpg" mode="aspectFill" lazy-load="false" binderror="" bindload="" />
+                <image style="{{p1Turn?'box-shadow: greenyellow 0 0 2px 2px;':'box-shadow: red 0 0 2px 2px;'}}" class="meAvatar" src="../../static/dragon.jpg" mode="aspectFill" lazy-load="false" binderror="" bindload="" />
             </view>
-            <a bindtap="changeRobot" class="robot {{robot?'robotActive':''}}">托管</a>
         </view>
     </view>
 </view>

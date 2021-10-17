@@ -52,6 +52,8 @@ Page({
 		uuid: null,
 		token: null,
 		yourID: null,
+		robot: false,
+		robot1id: '',
 	},
 	// 事件处理函数
 	run(e) {
@@ -206,7 +208,7 @@ Page({
 			})
 		}
 	},
-	onShow() {
+	onLoad() {
 		let uuid = wx.getStorageSync('uuid')
 		let token = 'Bearer ' + wx.getStorageSync('token')
 		let yourID = wx.getStorageSync('yourID')
@@ -219,6 +221,9 @@ Page({
 		this.setData({
 			inid: inid,
 		})
+	},
+	onUnload() {
+		clearInterval(this.data.robot1id)
 	},
 	listen() {
 		if (this.pileTotal <= 0) {
@@ -264,8 +269,8 @@ Page({
 								icon: 'error',
 							})
 							setTimeout(() => {
-								wx.navigateTo({
-									url: '/pages/gamehall/gamehall',
+								wx.reLaunch({
+									url: '/pages/chooseMode/chooseMode',
 								})
 							}, 2000)
 						}
@@ -615,6 +620,33 @@ Page({
 					}
 				}
 			}
+		}
+	},
+	AIinterface() {
+		return {
+			currentTarget: {
+				dataset: {
+					flower: '',
+					type: 0,
+				},
+			},
+		}
+	},
+	p1AI() {
+		if (this.data.turn) {
+			let op = this.AIinterface()
+			console.log(op)
+			this.run(op)
+		}
+	},
+	changeRobot() {
+		this.setData({
+			robot: !this.data.robot,
+		})
+		if (this.data.robot) {
+			this.data.robot1id = setInterval(this.p1AI, 2000)
+		} else {
+			clearInterval(this.data.robot1id)
 		}
 	},
 })

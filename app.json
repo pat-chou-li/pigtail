@@ -5,7 +5,10 @@
 		"pages/gamehall/gamehall",
 		"pages/battle/battle",
 		"pages/game/game",
-		"pages/list/list"
+		"pages/list/list",
+		"pages/chooseMode/chooseMode",
+		"pages/localGame/localGame",
+		"pages/AIGame/AIGame"
 	],
 	"window": {
 		"backgroundTextStyle": "light",

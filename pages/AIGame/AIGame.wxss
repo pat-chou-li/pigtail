@@ -28,6 +28,7 @@
 	position: relative;
 	bottom: 3vh;
 	margin-right: 7vw;
+	text-align: center;
 }
 
 .enermyContainer .avatar {

@@ -40,33 +40,7 @@
 	width: 120rpx;
 	height: 120rpx;
 	border-radius: 500px;
-	box-shadow: greenyellow 0 0 2px 2px;
-}
-
-.robot {
-	width: 25vw;
-	height: 6vh;
-	color: white;
-	border-radius: 25px;
-	position: absolute;
-	right: 9vw;
-	bottom: 6vh;
-	box-shadow: 0 7px 0 #0880d7, 0 8px 3px rgb(0 0 0 / 30%);
-	background-color: #1b9af7;
-	border-color: #1b9af7;
-	border-style: solid;
-	border-width: 1px;
-	box-shadow: inset 0px 1px 0px rgb(255 255 255 / 30%),
-		0 1px 2px rgb(0 0 0 / 15%);
-	text-align: center;
-	line-height: 6vh;
-	transition: 0.5s;
-}
-.robotActive {
-	border-color: #0880d7;
-	color: #0880d7;
-	background: #2798eb;
-	box-shadow: inset 0px 1px 3px rgb(0 0 0 / 20%), 0px 1px 0px white;
+	/*box-shadow: greenyellow 0 0 2px 2px;*/
 }
 
 .cards {
