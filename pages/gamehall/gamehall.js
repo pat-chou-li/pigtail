@@ -1,4 +1,3 @@
-// index.js
 // 获取应用实例
 const app = getApp()
 
@@ -20,7 +19,7 @@ Page({
 						private: true,
 					},
 					header: {
-						Authorization:head,
+						Authorization: head,
 					},
 					success(res) {
 						wx.hideLoading()

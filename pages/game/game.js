@@ -1,4 +1,3 @@
-// index.js
 // 获取应用实例
 const app = getApp()
 
@@ -224,6 +223,7 @@ Page({
 	},
 	onUnload() {
 		clearInterval(this.data.robot1id)
+		clearInterval(this.data.inid)
 	},
 	listen() {
 		if (this.pileTotal <= 0) {
@@ -261,6 +261,7 @@ Page({
 									}
 									that.change(value)
 									that.over()
+									return
 								},
 							})
 						} else {
@@ -273,6 +274,7 @@ Page({
 									url: '/pages/chooseMode/chooseMode',
 								})
 							}, 2000)
+							return
 						}
 					}
 					newValue = res.data
@@ -302,6 +304,7 @@ Page({
 		}
 	},
 	over() {
+		clearInterval(this.data.inid)
 		if (this.data.meTotal > this.data.enermyTotal) {
 			wx.showToast({
 				title: 'you lose!',
@@ -316,7 +319,7 @@ Page({
 			})
 		}
 		setTimeout(() => {
-			wx.navigateTo({
+			wx.reLaunch({
 				url: '/pages/gamehall/gamehall',
 			})
 		}, 2000)

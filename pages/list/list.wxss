@@ -100,8 +100,12 @@ page {
 	height: 42rpx;
 	width: 42rpx;
 	align-self: center;
-	margin-left: 10rpx;
-	margin-right: 20rpx;
+	position: absolute;
+	right: 15%;
+}
+
+.unContainer input {
+	width: 80%;
 }
 
 .center {
