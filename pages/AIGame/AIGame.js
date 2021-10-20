@@ -155,8 +155,59 @@ Page({
 		})
 	},
 	//AI接口
-	AIinterface() {
-		return {
+	AIinterfaceP2() {
+		let _data = {}
+		_data.enermyClub = this.data.meClub
+		_data.enermyDiamond = this.data.meDiamond
+		_data.enermySpade = this.data.meSpade
+		_data.enermyHeart = this.data.meHeart
+		_data.enermyTotal = this.data.meTotal
+
+		_data.meClub = this.data.enermyClub
+		_data.meDiamond = this.data.enermyDiamond
+		_data.meSpade = this.data.enermySpade
+		_data.meHeart = this.data.enermyHeart
+		_data.meTotal = this.data.enermyTotal
+
+		var meMsg = new Array()
+		meMsg['H'] = _data.meHeart
+		meMsg['C'] = _data.meClub
+		meMsg['S'] = _data.meSpade
+		meMsg['D'] = _data.meDiamond
+		meMsg['N'] = 0
+		var enemyMsg = new Array()
+		enemyMsg['H'] = _data.enermyHeart
+		enemyMsg['C'] = _data.enermyClub
+		enemyMsg['S'] = _data.enermySpade
+		enemyMsg['D'] = _data.enermyDiamond
+		enemyMsg['N'] = 0
+
+		var plieMsg = new Array()
+		var maxFlower
+		var maxNumber = -1
+		var minFlower
+		var minNumber = 100
+		plieMsg['H'] = 13 - _data.meHeart - _data.enermyHeart
+		plieMsg['C'] = 13 - _data.meClub - _data.enermyClub
+		plieMsg['S'] = 13 - _data.meSpade - _data.enermySpade
+		plieMsg['D'] = 13 - _data.meDiamond - _data.enermyDiamond
+		plieMsg['N'] = 0
+		for (var key in plieMsg) {
+			if (maxNumber < plieMsg[key]) {
+				//获取卡组中最多的花色
+				maxFlower = key
+				maxNumber = plieMsg[key]
+			}
+		}
+		for (var key in plieMsg) {
+			if (minNumber > plieMsg[key]) {
+				//获取卡组中最少的花色
+				minFlower = key
+				minNumber = plieMsg[key]
+			}
+		}
+
+		var res = {
 			currentTarget: {
 				dataset: {
 					flower: '',
@@ -164,6 +215,374 @@ Page({
 				},
 			},
 		}
+		if (
+			_data.meTotal == 0 ||
+			_data.enermyTotal > this.data.pileTotal + 25 ||
+			_data.enermyTotal > 39
+		) {
+			res.currentTarget.dataset.type = 0
+			console.log(224)
+			return res //没牌和翻牌必胜的情况，直接翻牌
+		}
+		if (this.data.mainStack.length == 0) {
+			var mainStackTop = 'Null'
+		} else {
+			var mainStackTop = this.data.mainStack[this.data.mainTotal - 1]
+		}
+		var TopFlower = mainStackTop[0] //顶部花色
+		var topProb = plieMsg[TopFlower] / this.data.pileTotal //翻出顶部花色概率
+
+		var maxProb = maxNumber / this.data.pileTotal
+
+		if (_data.meTotal <= _data.enermyTotal) {
+			//自己的手牌比对面少的情况
+			if (
+				_data.meTotal + this.data.mainTotal < _data.enermyTotal &&
+				_data.meTotal + this.data.mainTotal < 16 &&
+				meMsg[TopFlower] != 0
+			) {
+				//如果吃下牌还比对面少且小于16张，吃牌
+				res.currentTarget.dataset.type = 1
+				res.currentTarget.dataset.flower = TopFlower
+				console.log(247)
+				return res
+			} else if (topProb < 0.4) {
+				//吃牌概率小于0.4，翻牌
+				res.currentTarget.dataset.type = 0
+				console.log(252)
+				return res
+			} else {
+				var myMaxFlower
+				var myMaxNumber = -1
+				for (var key in meMsg) {
+					if (key == TopFlower) {
+						continue
+					}
+					if (myMaxNumber <= meMsg[key]) {
+						//获取我方卡组中最多的花色
+						myMaxFlower = key
+						myMaxNumber = meMsg[key]
+					}
+				}
+				if (myMaxNumber == -1 || myMaxNumber == 0) {
+					//如果手里只有一种花色且恰好是牌顶的牌，只能翻牌
+					res.currentTarget.dataset.type = 0
+					console.log(270)
+					return res
+				}
+				res.currentTarget.dataset.type = 1
+				res.currentTarget.dataset.flower = myMaxFlower
+				console.log(275)
+				return res //打出这个花色
+			}
+		} else {
+			//自己手牌比对面多的情况
+			if (
+				_data.enermyTotal + this.data.mainTotal >
+				25 + this.data.pileTotal
+			) {
+				//当对面吃下牌我方必胜时
+				if (
+					_data.enermyTotal - enemyMsg[maxFlower] <
+						meMsg[maxFlower] &&
+					maxProb >= 0.75
+				) {
+					//当我方能逼迫对面翻牌且对方吃牌概率大于0.75时，出最有可能被翻出的牌
+					if (meMsg[maxFlower] == 0) {
+						var myMaxFlower
+						var myMaxNumber = -1
+						for (var key in meMsg) {
+							if (key == TopFlower) {
+								continue
+							}
+							if (myMaxNumber <= meMsg[key]) {
+								//获取我方卡组中最多的花色
+								myMaxFlower = key
+								myMaxNumber = meMsg[key]
+							}
+						}
+						if (myMaxNumber == -1 || myMaxNumber == 0) {
+							//如果手里只有一种花色且恰好是牌顶的牌，只能翻牌
+							res.currentTarget.dataset.type = 0
+							console.log(422)
+							return res
+						}
+						res.currentTarget.dataset.type = 1
+						res.currentTarget.dataset.flower = myMaxFlower
+						console.log(427)
+						return res //打出这个花色
+						//当对面即使吃下牌也无法赢时，瞎寄吧出
+					} else {
+						//有就出
+						res.currentTarget.dataset.type = 1
+						res.currentTarget.dataset.flower = maxFlower
+						console.log(301)
+						return res //打出这个花色
+					}
+				} else {
+					//当对面即使吃下牌也无法赢时，瞎寄吧出
+					var myMaxFlower
+					var myMaxNumber = -1
+					for (var key in meMsg) {
+						if (key == TopFlower) {
+							continue
+						}
+						if (myMaxNumber <= meMsg[key]) {
+							//获取我方卡组中最多的花色
+							myMaxFlower = key
+							myMaxNumber = meMsg[key]
+						}
+					}
+					if (myMaxNumber == -1 || myMaxNumber == 0) {
+						//如果手里只有一种花色且恰好是牌顶的牌，只能翻牌
+						res.currentTarget.dataset.type = 0
+						console.log(422)
+						return res
+					}
+					res.currentTarget.dataset.type = 1
+					res.currentTarget.dataset.flower = myMaxFlower
+					console.log(427)
+					return res //打出这个花色
+					//当对面即使吃下牌也无法赢时，瞎寄吧出
+				}
+			} else {
+				//当对面即使吃下牌也无法赢时，瞎寄吧出
+				var myMaxFlower
+				var myMaxNumber = -1
+				for (var key in meMsg) {
+					if (key == TopFlower) {
+						continue
+					}
+					if (myMaxNumber <= meMsg[key]) {
+						//获取我方卡组中最多的花色
+						myMaxFlower = key
+						myMaxNumber = meMsg[key]
+					}
+				}
+				if (myMaxNumber == -1 || myMaxNumber == 0) {
+					//如果手里只有一种花色且恰好是牌顶的牌，只能翻牌
+					res.currentTarget.dataset.type = 0
+					console.log(422)
+					return res
+				}
+				res.currentTarget.dataset.type = 1
+				res.currentTarget.dataset.flower = myMaxFlower
+				console.log(427)
+				return res //打出这个花色
+				//当对面即使吃下牌也无法赢时，瞎寄吧出
+			}
+		}
+		res.currentTarget.dataset.type = 0
+		console.log(319)
+		return res //总之翻
+	},
+	AIinterfaceP1() {
+		var meMsg = new Array()
+		meMsg['H'] = this.data.meHeart
+		meMsg['C'] = this.data.meClub
+		meMsg['S'] = this.data.meSpade
+		meMsg['D'] = this.data.meDiamond
+		meMsg['N'] = 0
+		var enemyMsg = new Array()
+		enemyMsg['H'] = this.data.enermyHeart
+		enemyMsg['C'] = this.data.enermyClub
+		enemyMsg['S'] = this.data.enermySpade
+		enemyMsg['D'] = this.data.enermyDiamond
+		enemyMsg['N'] = 0
+
+		var plieMsg = new Array()
+		var maxFlower
+		var maxNumber = -1
+		var minFlower
+		var minNumber = 100
+		plieMsg['H'] = 13 - this.data.meHeart - this.data.enermyHeart
+		plieMsg['C'] = 13 - this.data.meClub - this.data.enermyClub
+		plieMsg['S'] = 13 - this.data.meSpade - this.data.enermySpade
+		plieMsg['D'] = 13 - this.data.meDiamond - this.data.enermyDiamond
+		plieMsg['N'] = 0
+		for (var key in plieMsg) {
+			if (maxNumber < plieMsg[key]) {
+				//获取卡组中最多的花色
+				maxFlower = key
+				maxNumber = plieMsg[key]
+			}
+		}
+		for (var key in plieMsg) {
+			if (minNumber > plieMsg[key]) {
+				//获取卡组中最少的花色
+				minFlower = key
+				minNumber = plieMsg[key]
+			}
+		}
+
+		var res = {
+			currentTarget: {
+				dataset: {
+					flower: '',
+					type: 0,
+				},
+			},
+		}
+		if (
+			this.data.meTotal == 0 ||
+			this.data.enermyTotal > this.data.pileTotal + 25 ||
+			this.data.enermyTotal > 39
+		) {
+			res.currentTarget.dataset.type = 0
+			console.log(375)
+			return res //没牌和翻牌必胜的情况，直接翻牌
+		}
+		if (this.data.mainStack.length == 0) {
+			var mainStackTop = 'Null'
+		} else {
+			var mainStackTop = this.data.mainStack[this.data.mainTotal - 1]
+		}
+		var TopFlower = mainStackTop[0] //顶部花色
+		var topProb = plieMsg[TopFlower] / this.data.pileTotal //翻出顶部花色概率
+
+		var maxProb = maxNumber / this.data.pileTotal
+
+		if (this.data.meTotal <= this.data.enermyTotal) {
+			//自己的手牌比对面少的情况
+			if (
+				this.data.meTotal + this.data.mainTotal <
+					this.data.enermyTotal &&
+				this.data.meTotal + this.data.mainTotal < 16 &&
+				meMsg[TopFlower] != 0
+			) {
+				//如果吃下牌还比对面少且小于16张，吃牌
+				res.currentTarget.dataset.type = 1
+				res.currentTarget.dataset.flower = TopFlower
+				console.log(399)
+				return res
+			} else if (topProb < 0.4) {
+				//吃牌概率小于0.4，翻牌
+				res.currentTarget.dataset.type = 0
+				console.log(404)
+				return res
+			} else {
+				var myMaxFlower
+				var myMaxNumber = -1
+				for (var key in meMsg) {
+					if (key == TopFlower) {
+						continue
+					}
+					if (myMaxNumber <= meMsg[key]) {
+						//获取我方卡组中最多的花色
+						myMaxFlower = key
+						myMaxNumber = meMsg[key]
+					}
+				}
+				if (myMaxNumber == -1 || myMaxNumber == 0) {
+					//如果手里只有一种花色且恰好是牌顶的牌，只能翻牌
+					res.currentTarget.dataset.type = 0
+					console.log(422)
+					return res
+				}
+				res.currentTarget.dataset.type = 1
+				res.currentTarget.dataset.flower = myMaxFlower
+				console.log(427)
+				return res //打出这个花色
+			}
+		} else {
+			//自己手牌比对面多的情况
+			if (
+				this.data.enermyTotal + this.data.mainTotal >
+				25 + this.data.pileTotal
+			) {
+				//当对面吃下牌我方必胜时
+				if (
+					this.data.enermyTotal - enemyMsg[maxFlower] <
+						meMsg[maxFlower] &&
+					maxProb >= 0.75
+				) {
+					//当我方能逼迫对面翻牌且对方吃牌概率大于0.75时，出最有可能被翻出的牌
+					if (meMsg[maxFlower] == 0) {
+						//但如果没有这张牌，就摆烂
+						var myMaxFlower
+						var myMaxNumber = -1
+						for (var key in meMsg) {
+							if (key == TopFlower) {
+								continue
+							}
+							if (myMaxNumber <= meMsg[key]) {
+								//获取我方卡组中最多的花色
+								myMaxFlower = key
+								myMaxNumber = meMsg[key]
+							}
+						}
+						if (myMaxNumber == -1 || myMaxNumber == 0) {
+							//如果手里只有一种花色且恰好是牌顶的牌，只能翻牌
+							res.currentTarget.dataset.type = 0
+							console.log(422)
+							return res
+						}
+						res.currentTarget.dataset.type = 1
+						res.currentTarget.dataset.flower = myMaxFlower
+						console.log(427)
+						return res //打出这个花色
+						//当对面即使吃下牌也无法赢时，瞎寄吧出
+					} else {
+						//有就出
+						res.currentTarget.dataset.type = 1
+						res.currentTarget.dataset.flower = maxFlower
+						console.log(455)
+						return res //打出这个花色
+					}
+				} else {
+					var myMaxFlower
+					var myMaxNumber = -1
+					for (var key in meMsg) {
+						if (key == TopFlower) {
+							continue
+						}
+						if (myMaxNumber <= meMsg[key]) {
+							//获取我方卡组中最多的花色
+							myMaxFlower = key
+							myMaxNumber = meMsg[key]
+						}
+					}
+					if (myMaxNumber == -1 || myMaxNumber == 0) {
+						//如果手里只有一种花色且恰好是牌顶的牌，只能翻牌
+						res.currentTarget.dataset.type = 0
+						console.log(422)
+						return res
+					}
+					res.currentTarget.dataset.type = 1
+					res.currentTarget.dataset.flower = myMaxFlower
+					console.log(427)
+					return res //打出这个花色
+					//当对面即使吃下牌也无法赢时，瞎寄吧出
+				}
+			} else {
+				var myMaxFlower
+				var myMaxNumber = -1
+				for (var key in meMsg) {
+					if (key == TopFlower) {
+						continue
+					}
+					if (myMaxNumber <= meMsg[key]) {
+						//获取我方卡组中最多的花色
+						myMaxFlower = key
+						myMaxNumber = meMsg[key]
+					}
+				}
+				if (myMaxNumber == -1 || myMaxNumber == 0) {
+					//如果手里只有一种花色且恰好是牌顶的牌，只能翻牌
+					res.currentTarget.dataset.type = 0
+					console.log(422)
+					return res
+				}
+				res.currentTarget.dataset.type = 1
+				res.currentTarget.dataset.flower = myMaxFlower
+				console.log(427)
+				return res //打出这个花色
+				//当对面即使吃下牌也无法赢时，瞎寄吧出
+			}
+		}
+		res.currentTarget.dataset.type = 0
+		console.log(472)
+		return res //总之翻
 	},
 	//翻牌
 	flop() {
@@ -636,7 +1055,8 @@ Page({
 	},
 	p1AI() {
 		if (this.data.p1Turn) {
-			let op = this.AIinterface()
+			console.log(this.data)
+			let op = this.AIinterfaceP1()
 			console.log(op)
 			if (op.currentTarget.dataset.type == 0) this.flop()
 			else this.run(op)
@@ -654,7 +1074,8 @@ Page({
 	},
 	p2AI() {
 		if (!this.data.p1Turn) {
-			let op = this.AIinterface()
+			console.log(this.data)
+			let op = this.AIinterfaceP2()
 			console.log(op)
 			if (op.currentTarget.dataset.type == 0) this.flop()
 			else this.run(op)
