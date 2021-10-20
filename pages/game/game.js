@@ -227,7 +227,6 @@ Page({
 	},
 	listen() {
 		if (this.pileTotal <= 0) {
-			clearInterval(this.data.inid)
 			this.over()
 		} else {
 			let that = this
@@ -242,7 +241,6 @@ Page({
 				},
 				success(res) {
 					if (res.data.code == 400) {
-						clearInterval(that.data.inid)
 						if (that.data.pileTotal <= 1) {
 							wx.request({
 								url:
@@ -521,43 +519,71 @@ Page({
 					let _card = ''
 					switch (arr[2][0]) {
 						case 'D':
-							_card = this.data.enermyDiamondStack.pop()
+							this.data.enermyDiamondStack.pop()
+							if (!this.data.enermyDiamondStack.slice(-1)[0]) {
+								_card = '../../static/pukeimage1/back.png'
+							} else {
+								_card =
+									'../../static/pukeimage1/' +
+									this.data.enermyDiamondStack.slice(-1)[0] +
+									'.jpg'
+							}
 							this.setData({
 								mainDiamond: this.data.mainDiamond + 1,
 								enermyDiamond: this.data.enermyDiamond - 1,
 								enermyTotal: this.data.enermyTotal - 1,
-								enermyDiamondTop:
-									'../../static/pukeimage1/' + _card + '.jpg',
+								enermyDiamondTop: _card,
 							})
 							break
 						case 'S':
-							_card = this.data.enermySpadeStack.pop()
+							this.data.enermySpadeStack.pop()
+							if (!this.data.enermySpadeStack.slice(-1)[0]) {
+								_card = '../../static/pukeimage1/back.png'
+							} else {
+								_card =
+									'../../static/pukeimage1/' +
+									this.data.enermySpadeStack.slice(-1)[0] +
+									'.jpg'
+							}
 							this.setData({
 								mainSpade: this.data.mainSpade + 1,
 								enermySpade: this.data.enermySpade - 1,
 								enermyTotal: this.data.enermyTotal - 1,
-								enermySpadeTop:
-									'../../static/pukeimage1/' + _card + '.jpg',
+								enermySpadeTop: _card,
 							})
 							break
 						case 'H':
-							_card = this.data.enermyHeartStack.pop()
+							this.data.enermyHeartStack.pop()
+							if (!this.data.enermyHeartStack.slice(-1)[0]) {
+								_card = '../../static/pukeimage1/back.png'
+							} else {
+								_card =
+									'../../static/pukeimage1/' +
+									this.data.enermyHeartStack.slice(-1)[0] +
+									'.jpg'
+							}
 							this.setData({
 								mainHeart: this.data.mainHeart + 1,
 								enermyHeart: this.data.enermyHeart - 1,
 								enermyTotal: this.data.enermyTotal - 1,
-								enermyHeartTop:
-									'../../static/pukeimage1/' + _card + '.jpg',
+								enermyHeartTop: _card,
 							})
 							break
 						case 'C':
-							_card = this.data.enermyClubStack.pop()
+							this.data.enermyClubStack.pop()
+							if (!this.data.enermyClubStack.slice(-1)[0]) {
+								_card = '../../static/pukeimage1/back.png'
+							} else {
+								_card =
+									'../../static/pukeimage1/' +
+									this.data.enermyClubStack.slice(-1)[0] +
+									'.jpg'
+							}
 							this.setData({
 								mainClub: this.data.mainClub + 1,
 								enermyClub: this.data.enermyClub - 1,
 								enermyTotal: this.data.enermyTotal - 1,
-								enermyClubTop:
-									'../../static/pukeimage1/' + _card + '.jpg',
+								enermyClubTop: _card,
 							})
 							break
 					}
@@ -626,7 +652,45 @@ Page({
 		}
 	},
 	AIinterface() {
-		return {
+		var meMsg = new Array()
+		meMsg['H'] = this.data.meHeart
+		meMsg['C'] = this.data.meClub
+		meMsg['S'] = this.data.meSpade
+		meMsg['D'] = this.data.meDiamond
+		meMsg['N'] = 0
+		var enemyMsg = new Array()
+		enemyMsg['H'] = this.data.enermyHeart
+		enemyMsg['C'] = this.data.enermyClub
+		enemyMsg['S'] = this.data.enermySpade
+		enemyMsg['D'] = this.data.enermyDiamond
+		enemyMsg['N'] = 0
+
+		var plieMsg = new Array()
+		var maxFlower
+		var maxNumber = -1
+		var minFlower
+		var minNumber = 100
+		plieMsg['H'] = 13 - this.data.meHeart - this.data.enermyHeart
+		plieMsg['C'] = 13 - this.data.meClub - this.data.enermyClub
+		plieMsg['S'] = 13 - this.data.meSpade - this.data.enermySpade
+		plieMsg['D'] = 13 - this.data.meDiamond - this.data.enermyDiamond
+		plieMsg['N'] = 0
+		for (var key in plieMsg) {
+			if (maxNumber < plieMsg[key]) {
+				//获取卡组中最多的花色
+				maxFlower = key
+				maxNumber = plieMsg[key]
+			}
+		}
+		for (var key in plieMsg) {
+			if (minNumber > plieMsg[key]) {
+				//获取卡组中最少的花色
+				minFlower = key
+				minNumber = plieMsg[key]
+			}
+		}
+
+		var res = {
 			currentTarget: {
 				dataset: {
 					flower: '',
@@ -634,6 +698,166 @@ Page({
 				},
 			},
 		}
+		if (
+			this.data.meTotal == 0 ||
+			this.data.enermyTotal > this.data.pileTotal + 25 ||
+			this.data.enermyTotal > 39
+		) {
+			res.currentTarget.dataset.type = 0
+			console.log(375)
+			return res //没牌和翻牌必胜的情况，直接翻牌
+		}
+		if (this.data.mainStack.length == 0) {
+			var mainStackTop = 'Null'
+		} else {
+			var mainStackTop = this.data.mainStack[this.data.mainTotal - 1]
+		}
+		var TopFlower = mainStackTop[0] //顶部花色
+		var topProb = plieMsg[TopFlower] / this.data.pileTotal //翻出顶部花色概率
+
+		var maxProb = maxNumber / this.data.pileTotal
+
+		if (this.data.meTotal <= this.data.enermyTotal) {
+			//自己的手牌比对面少的情况
+			if (
+				this.data.meTotal + this.data.mainTotal <
+					this.data.enermyTotal &&
+				this.data.meTotal + this.data.mainTotal < 16 &&
+				meMsg[TopFlower] != 0
+			) {
+				//如果吃下牌还比对面少且小于16张，吃牌
+				res.currentTarget.dataset.type = 1
+				res.currentTarget.dataset.flower = TopFlower
+				console.log(399)
+				return res
+			} else if (topProb < 0.4) {
+				//吃牌概率小于0.4，翻牌
+				res.currentTarget.dataset.type = 0
+				console.log(404)
+				return res
+			} else {
+				var myMaxFlower
+				var myMaxNumber = -1
+				for (var key in meMsg) {
+					if (key == TopFlower) {
+						continue
+					}
+					if (myMaxNumber <= meMsg[key]) {
+						//获取我方卡组中最多的花色
+						myMaxFlower = key
+						myMaxNumber = meMsg[key]
+					}
+				}
+				if (myMaxNumber == -1 || myMaxNumber == 0) {
+					//如果手里只有一种花色且恰好是牌顶的牌，只能翻牌
+					res.currentTarget.dataset.type = 0
+					console.log(422)
+					return res
+				}
+				res.currentTarget.dataset.type = 1
+				res.currentTarget.dataset.flower = myMaxFlower
+				console.log(427)
+				return res //打出这个花色
+			}
+		} else {
+			//自己手牌比对面多的情况
+			if (
+				this.data.enermyTotal + this.data.mainTotal >
+				25 + this.data.pileTotal
+			) {
+				//当对面吃下牌我方必胜时
+				if (
+					this.data.enermyTotal - enemyMsg[maxFlower] <
+						meMsg[maxFlower] &&
+					maxProb >= 0.75
+				) {
+					//当我方能逼迫对面翻牌且对方吃牌概率大于0.75时，出最有可能被翻出的牌
+					if (meMsg[maxFlower] == 0) {
+						//但如果没有这张牌，就摆烂
+						var myMaxFlower
+						var myMaxNumber = -1
+						for (var key in meMsg) {
+							if (key == TopFlower) {
+								continue
+							}
+							if (myMaxNumber <= meMsg[key]) {
+								//获取我方卡组中最多的花色
+								myMaxFlower = key
+								myMaxNumber = meMsg[key]
+							}
+						}
+						if (myMaxNumber == -1 || myMaxNumber == 0) {
+							//如果手里只有一种花色且恰好是牌顶的牌，只能翻牌
+							res.currentTarget.dataset.type = 0
+							console.log(422)
+							return res
+						}
+						res.currentTarget.dataset.type = 1
+						res.currentTarget.dataset.flower = myMaxFlower
+						console.log(427)
+						return res //打出这个花色
+						//当对面即使吃下牌也无法赢时，瞎寄吧出
+					} else {
+						//有就出
+						res.currentTarget.dataset.type = 1
+						res.currentTarget.dataset.flower = maxFlower
+						console.log(455)
+						return res //打出这个花色
+					}
+				} else {
+					var myMaxFlower
+					var myMaxNumber = -1
+					for (var key in meMsg) {
+						if (key == TopFlower) {
+							continue
+						}
+						if (myMaxNumber <= meMsg[key]) {
+							//获取我方卡组中最多的花色
+							myMaxFlower = key
+							myMaxNumber = meMsg[key]
+						}
+					}
+					if (myMaxNumber == -1 || myMaxNumber == 0) {
+						//如果手里只有一种花色且恰好是牌顶的牌，只能翻牌
+						res.currentTarget.dataset.type = 0
+						console.log(422)
+						return res
+					}
+					res.currentTarget.dataset.type = 1
+					res.currentTarget.dataset.flower = myMaxFlower
+					console.log(427)
+					return res //打出这个花色
+					//当对面即使吃下牌也无法赢时，瞎寄吧出
+				}
+			} else {
+				var myMaxFlower
+				var myMaxNumber = -1
+				for (var key in meMsg) {
+					if (key == TopFlower) {
+						continue
+					}
+					if (myMaxNumber <= meMsg[key]) {
+						//获取我方卡组中最多的花色
+						myMaxFlower = key
+						myMaxNumber = meMsg[key]
+					}
+				}
+				if (myMaxNumber == -1 || myMaxNumber == 0) {
+					//如果手里只有一种花色且恰好是牌顶的牌，只能翻牌
+					res.currentTarget.dataset.type = 0
+					console.log(422)
+					return res
+				}
+				res.currentTarget.dataset.type = 1
+				res.currentTarget.dataset.flower = myMaxFlower
+				console.log(427)
+				return res //打出这个花色
+				//当对面即使吃下牌也无法赢时，瞎寄吧出
+			}
+		}
+		res.currentTarget.dataset.type = 0
+		console.log(472)
+		return res //总之翻
 	},
 	p1AI() {
 		if (this.data.turn) {
