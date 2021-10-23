@@ -54,10 +54,11 @@ Page({
 		robot: false,
 		robot1id: '',
 		loadingFlag: false,
+		overFlag: false,
 	},
 	// 事件处理函数
 	run(e) {
-		if (this.data.pileTotal <= 0) {
+		if (this.data.pileTotal <= 0 && this.data.overFlag == false) {
 			this.over()
 			return
 		}
@@ -224,7 +225,7 @@ Page({
 			token: token,
 			yourID: yourID,
 		})
-		let inid = setInterval(this.listen, 500)
+		let inid = setInterval(this.listen, 50)
 		this.setData({
 			inid: inid,
 		})
@@ -234,7 +235,7 @@ Page({
 		clearInterval(this.data.inid)
 	},
 	listen() {
-		if (this.pileTotal <= 0) {
+		if (this.data.pileTotal <= 0 && this.data.overFlag == false) {
 			this.over()
 		} else {
 			let that = this
@@ -249,7 +250,7 @@ Page({
 				},
 				success(res) {
 					if (res.data.code == 400) {
-						if (that.data.pileTotal <= 1) {
+						if (that.data.pileTotal <= 4) {
 							wx.request({
 								url:
 									'http://172.17.173.97:9000/api/game/' +
@@ -265,8 +266,11 @@ Page({
 											last_code: res.data.data.last,
 										},
 									}
-									that.change(value)
-									that.over()
+									if (that.data.overFlag == false) {
+										that.data.overFlag = true
+										that.change(value)
+										that.over()
+									}
 									return
 								},
 							})
@@ -333,7 +337,6 @@ Page({
 	change(value) {
 		console.log('change执行')
 		console.log(value)
-		this.data.turn = value.data.your_turn
 		if (value.msg == '操作成功' && value.data.last_msg != '对局刚开始') {
 			let arr = value.data.last_code.trim().split(/\s+/)
 			//如果上次操作是我方操作
@@ -658,6 +661,7 @@ Page({
 				}
 			}
 		}
+		this.data.turn = value.data.your_turn
 	},
 	AIinterface() {
 		var meMsg = new Array()
