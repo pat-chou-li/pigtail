@@ -225,7 +225,7 @@ Page({
 			token: token,
 			yourID: yourID,
 		})
-		let inid = setInterval(this.listen, 50)
+		let inid = setInterval(this.listen, 130)
 		this.setData({
 			inid: inid,
 		})
@@ -276,7 +276,7 @@ Page({
 							})
 						} else {
 							wx.showToast({
-								title: '对局已结束！',
+								title: '超时！',
 								icon: 'error',
 							})
 							setTimeout(() => {
