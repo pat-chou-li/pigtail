@@ -225,7 +225,7 @@ Page({
 			token: token,
 			yourID: yourID,
 		})
-		let inid = setInterval(this.listen, 130)
+		let inid = setInterval(this.listen, 160)
 		this.setData({
 			inid: inid,
 		})
@@ -734,16 +734,16 @@ Page({
 			if (
 				this.data.meTotal + this.data.mainTotal <
 					this.data.enermyTotal &&
-				this.data.meTotal + this.data.mainTotal < 16 &&
+				this.data.meTotal + this.data.mainTotal < 24 &&
 				meMsg[TopFlower] != 0
 			) {
-				//如果吃下牌还比对面少且小于16张，吃牌
+				//如果吃下牌还比对面少且小于24张，吃牌
 				res.currentTarget.dataset.type = 1
 				res.currentTarget.dataset.flower = TopFlower
 				console.log(399)
 				return res
-			} else if (topProb < 0.4) {
-				//吃牌概率小于0.4，翻牌
+			} else if (topProb < 0.5) {
+				//吃牌概率小于0.5，翻牌
 				res.currentTarget.dataset.type = 0
 				console.log(404)
 				return res
